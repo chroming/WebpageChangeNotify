@@ -1,0 +1,19 @@
+{
+    "StartPage": [
+        "url1",
+        "url2"
+    ],
+    "TimeInterval": 3,
+    "Attention": {
+        "method": "",
+        "expression": ""
+    },
+    "Return": {
+        "method": "",
+        "expression": ""
+    },
+    "Notify": {
+        "email": "",
+        "message": ""
+    }
+}
