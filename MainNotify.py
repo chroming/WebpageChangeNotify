@@ -77,6 +77,7 @@ class WebVisit(object):
     def compare_result(self):
         pass
 
+    '''
     # 根据配置获取返回结果需要抓取的内容
     def return_config(self):
         for url in self.start_page_list:
@@ -100,7 +101,7 @@ class WebVisit(object):
         return_list = self.return_config()
         for rl in return_list:
             pass
-
+    '''
 
 
 
