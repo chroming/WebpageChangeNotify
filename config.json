@@ -1,12 +1,13 @@
 {
     "StartPage": [
-        "https://www.v2ex.com/",
-        "https://www.v2ex.com/?tab=apple"
+        "",
+        ""
     ],
-    "TimeInterval": 10,
+    "TimeInterval": 100,
+    "FailTimeInterval": 30,
     "Attention": {
-        "method": "re",
-        "expression": "<span class=\"item_title\">.*?</a></span>"
+        "method": "",
+        "expression": ""
     },
     "Return": {
         "method": "",
@@ -15,5 +16,11 @@
     "Notify": {
         "email": "",
         "message": ""
+    },
+    "Mail": {
+        "from_addr": "",
+        "password": "",
+        "to_addr": "",
+        "smtp_server": ""
     }
 }

@@ -2,16 +2,17 @@
 
 import requests
 import time
-from ReadJSON import *
 from RequestsHeader import req_headers
 from crawl_info import *
 from read_DB import *
+from sendMail import *
 
 
 class WebVisit(object):
     def __init__(self):
         self.start_page_list = []  # 监控网址列表
-        self.time_interval_num = 0  #
+        self.time_interval_num = 0  # 时间间隔
+        self.fail_time_interval_num = 0  # 访问失败再次访问时间间隔
         self.attention_method = ''  # 监控内容匹配方式(正则,xpath,css)
         self.attention_exp = ''  # 监控内容匹配表达式
         self.return_method = ''  # 返回内容匹配表达式
@@ -26,6 +27,7 @@ class WebVisit(object):
             try:
                 self.start_page_list = json_dict['StartPage']
                 self.time_interval_num = json_dict['TimeInterval']
+                self.fail_time_interval_num = json_dict['FailTimeInterval']
                 self.attention_method = json_dict['Attention']['method']
                 self.attention_exp = json_dict['Attention']['expression']
                 self.return_method = json_dict['Return']['method']
@@ -47,7 +49,7 @@ class WebVisit(object):
             return page.text
         except:
             print u"网络访问失败! "
-            time.sleep(self.time_interval_num)
+            time.sleep(self.fail_time_interval_num)
             return self.visit_web(url)
 
     # 根据配置获取要访问的url及要抓取的内容
@@ -67,23 +69,20 @@ class WebVisit(object):
                     print u"Attention.method字段配置错误! 请检查后重试! "
                     exit()
                 result_list_all.extend(result_list)
-                #return result_list
             else:
                 print u"get page %s error! " % url
         return result_list_all
 
     # 保存抓取结果
     def save_result(self):
-        result_list = self.visit_config()
-        new_list = write_db('test', 'test', result_list)
-        print new_list
-        #for rl in result_list:
-        #    pass
-            # 此处使用数据库保存
+        while 1:
+            result_list = self.visit_config()
+            new_list = write_db('test', 'test', result_list)
+            print new_list
+            if new_list:
+                SendMailTo("text", new_list)
+            time.sleep(self.time_interval_num)
 
-    # 与上次的结果比对获得更新内容
-    def compare_result(self):
-        pass
 
     '''
     # 根据配置获取返回结果需要抓取的内容
