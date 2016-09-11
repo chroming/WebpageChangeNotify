@@ -1,12 +1,12 @@
 {
     "StartPage": [
-        "url1",
-        "url2"
+        "https://www.v2ex.com/",
+        "https://www.v2ex.com/?tab=apple"
     ],
-    "TimeInterval": 3,
+    "TimeInterval": 10,
     "Attention": {
-        "method": "",
-        "expression": ""
+        "method": "re",
+        "expression": "<span class=\"item_title\">.*?</a></span>"
     },
     "Return": {
         "method": "",

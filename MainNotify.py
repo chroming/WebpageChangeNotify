@@ -5,6 +5,7 @@ import time
 from ReadJSON import *
 from RequestsHeader import req_headers
 from crawl_info import *
+from read_DB import *
 
 
 class WebVisit(object):
@@ -23,7 +24,7 @@ class WebVisit(object):
         json_dict = read_config()
         if json_dict:
             try:
-                self.start_page_list =json_dict['StartPage']
+                self.start_page_list = json_dict['StartPage']
                 self.time_interval_num = json_dict['TimeInterval']
                 self.attention_method = json_dict['Attention']['method']
                 self.attention_exp = json_dict['Attention']['expression']
@@ -40,17 +41,20 @@ class WebVisit(object):
 
     # 访问url
     def visit_web(self, url):
+
         try:
             page = requests.get(url, headers=req_headers, allow_redirects=True)
             return page.text
         except:
             print u"网络访问失败! "
-            time.sleep(30)
+            time.sleep(self.time_interval_num)
             return self.visit_web(url)
 
     # 根据配置获取要访问的url及要抓取的内容
     def visit_config(self):
+        result_list_all = []
         for url in self.start_page_list:
+            result_list = []
             page_text = self.visit_web(url)
             if page_text:
                 if self.attention_method == 're':
@@ -62,15 +66,19 @@ class WebVisit(object):
                 else:
                     print u"Attention.method字段配置错误! 请检查后重试! "
                     exit()
-                return result_list
+                result_list_all.extend(result_list)
+                #return result_list
             else:
-                print u"get page error! "
+                print u"get page %s error! " % url
+        return result_list_all
 
     # 保存抓取结果
     def save_result(self):
         result_list = self.visit_config()
-        for rl in result_list:
-            pass
+        new_list = write_db('test', 'test', result_list)
+        print new_list
+        #for rl in result_list:
+        #    pass
             # 此处使用数据库保存
 
     # 与上次的结果比对获得更新内容
@@ -103,6 +111,10 @@ class WebVisit(object):
             pass
     '''
 
+if __name__ == '__main__':
+    newVisit = WebVisit()
+    newVisit.get_config()
+    newVisit.save_result()
 
 
 

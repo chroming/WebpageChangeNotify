@@ -1,4 +1,5 @@
 # -*- coding:utf-8 -*-
+
 import sqlite3
 
 
@@ -6,10 +7,7 @@ import sqlite3
 def create_table(db_name, table_name):
     conn = sqlite3.connect('%s.db' % db_name)
     cursor = conn.cursor()
-    try:
-        cursor.execute('create table ?(id int auto_increment PRIMARY KEY,result text,time timestamp())', table_name)
-    except:
-        pass
+    cursor.execute("create table %s (id INTEGER PRIMARY KEY AUTOINCREMENT,result text UNIQUE,date timestamp not null default (datetime('now','localtime')))"%table_name,)
     cursor.close()
     conn.close()
 
@@ -30,11 +28,21 @@ def read_db(db_name, table_name, size=100):
 def write_db(db_name, table_name, result_list):
     conn = sqlite3.connect('%s.db' % db_name)
     cursor = conn.cursor()
+    new_list = []
     for result in result_list:
-        cursor.execute('insert into ? (result) values (?)', (table_name, result))
-        conn.commit()
+        sql = "insert into %s (result) values ('%s')" % (table_name, result)
+        #cursor.execute(sql)
+        #conn.commit()
+        try:
+            cursor.execute(sql)
+            new_list.append(result)
+            conn.commit()
+            print(u"写入 "+sql+u"成功！")
+        except:
+            print(result+u"已存在！")
     cursor.close()
     conn.close()
+    return new_list
 
 
 if __name__ == '__main__':
