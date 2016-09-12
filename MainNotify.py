@@ -7,6 +7,7 @@ from crawl_info import *
 from read_DB import *
 from sendMail import *
 from FilterResult import *
+import random
 
 
 class WebVisit(object):
@@ -54,7 +55,7 @@ class WebVisit(object):
             return page.text
         except:
             print u"网络访问失败! "
-            time.sleep(self.fail_time_interval_num)
+            time.sleep(self.fail_time_interval_num + random.randint(10, 30))
             return self.visit_web(url)
 
     # 根据配置获取要访问的url及要抓取的内容
@@ -64,6 +65,7 @@ class WebVisit(object):
             result_list = []
             page_text = self.visit_web(url)
             if page_text:
+                print "%s访问成功！ " % url
                 if self.attention_method == 're':
                     result_list = re_find(page_text, self.attention_exp)
                 elif self.attention_method == 'xpath':
@@ -73,9 +75,11 @@ class WebVisit(object):
                 else:
                     print u"Attention.method字段配置错误! 请检查后重试! "
                     exit()
+                print "抓取成功！  "
                 result_list_all.extend(result_list)
             else:
                 print u"get page %s error! " % url
+            time.sleep(self.fail_time_interval_num + random.randint(10, 30))
         return result_list_all
 
     # 保存抓取结果
