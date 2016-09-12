@@ -5,7 +5,7 @@ import re
 
 # 正则表达式
 def re_find(text, exp):
-    re_result_list = re.findall(exp, text)
+    re_result_list = re.findall(r'%s' % exp, text, re.S)
     return re_result_list
 
 

@@ -13,10 +13,13 @@ def _format_addr(s):
 
 
 mail_dict = read_config()
-from_addr = mail_dict['Mail']['from_addr']
-password = mail_dict['Mail']['password']
-to_addr= mail_dict['Mail']['to_addr']
-smtp_server = mail_dict['Mail']['smtp_server']
+if mail_dict:
+    from_addr = mail_dict['Mail']['from_addr']
+    password = mail_dict['Mail']['password']
+    to_addr= mail_dict['Mail']['to_addr']
+    smtp_server = mail_dict['Mail']['smtp_server']
+else:
+    print u"配置文件不存在或内容有误! 请检查后重试! "
 
 
 def SendMailTo(subject, result):

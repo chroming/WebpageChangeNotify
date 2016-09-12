@@ -80,6 +80,10 @@ class WebVisit(object):
 
     # 保存抓取结果
     def save_result(self):
+        try:
+            create_table('result', 'result')
+        except:
+            pass
         while 1:
             result_list = self.visit_config()
             result_list = filter_result(result_list, self.filter_exp, self.filter_num)
