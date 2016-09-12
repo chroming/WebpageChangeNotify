@@ -6,6 +6,7 @@ from RequestsHeader import req_headers
 from crawl_info import *
 from read_DB import *
 from sendMail import *
+from FilterResult import *
 
 
 class WebVisit(object):
@@ -19,6 +20,8 @@ class WebVisit(object):
         self.return_exp = ''  # 返回
         self.notify_email = ''  # 提醒邮箱
         self.notify_message = ''  # 提醒内容
+        self.filter_exp = ''  # 结果过滤正则表达式
+        self.filter_num = 0  # 结果过滤group
 
     # 读取配置
     def get_config(self):
@@ -34,6 +37,8 @@ class WebVisit(object):
                 self.return_exp = json_dict['Return']['expression']
                 self.notify_email = json_dict['Notify']['email']
                 self.notify_message = json_dict['Notify']['message']
+                self.filter_exp = json_dict['Filter']['expression']
+                self.filter_num = json_dict['Filter']['num']
             except:
                 print u"配置不完整! 请修改后重试! "
                 exit()
@@ -77,8 +82,10 @@ class WebVisit(object):
     def save_result(self):
         while 1:
             result_list = self.visit_config()
+            result_list = filter_result(result_list, self.filter_exp, self.filter_num)
             new_list = write_db('test', 'test', result_list)
             print new_list
+            #new_list = filter_result(new_list, self.filter_exp, self.filter_num)
             if new_list:
                 SendMailTo("text", new_list)
             time.sleep(self.time_interval_num)

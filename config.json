@@ -22,5 +22,9 @@
         "password": "",
         "to_addr": "",
         "smtp_server": ""
+    },
+    "Filter": {
+        "expression": "",
+        "num": 1
     }
 }

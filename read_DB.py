@@ -37,9 +37,9 @@ def write_db(db_name, table_name, result_list):
             cursor.execute(sql)
             new_list.append(result)
             conn.commit()
-            print(u"写入 "+sql+u"成功！")
+            print(u"写入  "+sql+u" 成功！")
         except:
-            print(result+u"已存在！")
+            print(result+u" 已存在！")
     cursor.close()
     conn.close()
     return new_list
