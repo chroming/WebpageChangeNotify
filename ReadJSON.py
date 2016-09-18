@@ -3,10 +3,14 @@
 import os
 import json
 
+conf_name = raw_input("请输入配置文件名")
+if not conf_name:
+    name = 'config.json'
+
 
 # 读取配置文件
 def read_config():
-    file_path = './config.json'
+    file_path = './%s' % conf_name
     if os.path.isfile(file_path):
         with open(file_path, 'r') as json_file:
             try:

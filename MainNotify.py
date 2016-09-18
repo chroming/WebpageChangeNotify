@@ -65,7 +65,7 @@ class WebVisit(object):
             result_list = []
             page_text = self.visit_web(url)
             if page_text:
-                print "%s访问成功！ " % url
+                print u"%s访问成功！ " % url
                 if self.attention_method == 're':
                     result_list = re_find(page_text, self.attention_exp)
                 elif self.attention_method == 'xpath':
@@ -75,7 +75,7 @@ class WebVisit(object):
                 else:
                     print u"Attention.method字段配置错误! 请检查后重试! "
                     exit()
-                print "抓取成功！  "
+                print u"抓取成功！  "
                 result_list_all.extend(result_list)
             else:
                 print u"get page %s error! " % url
@@ -85,17 +85,18 @@ class WebVisit(object):
     # 保存抓取结果
     def save_result(self):
         try:
-            create_table('result', 'result')
+            create_table('%s' % conf_name, 'result')
         except:
             pass
         while 1:
             result_list = self.visit_config()
             result_list = filter_result(result_list, self.filter_exp, self.filter_num)
-            new_list = write_db('test', 'test', result_list)
+            new_list = write_db('%s' % conf_name, 'result', result_list)
             print new_list
             #new_list = filter_result(new_list, self.filter_exp, self.filter_num)
             if new_list:
-                SendMailTo("text", new_list)
+                new_json = json.dumps(new_list, encoding="UTF-8", ensure_ascii=False)
+                SendMailTo("有更新啦！ ", new_json)
             time.sleep(self.time_interval_num)
 
 
