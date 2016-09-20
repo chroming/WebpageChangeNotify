@@ -97,7 +97,7 @@ class WebVisit(object):
             if new_list:
                 new_json = json.dumps(new_list, encoding="UTF-8", ensure_ascii=False)
                 SendMailTo("有更新啦！ ", new_json)
-            time.sleep(self.time_interval_num)
+            time.sleep(self.time_interval_num + random.randint(1, 100))
 
 
     '''
