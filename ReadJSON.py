@@ -3,7 +3,7 @@
 import os
 import json
 
-conf_name = raw_input("请输入配置文件名")
+conf_name = raw_input("Please input config name: ")
 if not conf_name:
     name = 'config.json'
 
