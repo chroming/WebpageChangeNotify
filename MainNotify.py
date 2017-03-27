@@ -72,14 +72,6 @@ class WebVisit(object):
             page_text = self.visit_web(url)
             if page_text:
                 print u"%s访问成功！ " % url
-                '''
-                if self.attention_method == 're':
-                    result_list = re_find(page_text, self.attention_exp)
-                elif self.attention_method == 'xpath':
-                    result_list = xpath_find(page_text, self.attention_exp)
-                elif self.attention_method == 'css':
-                    result_list = css_find(page_text, self.attention_exp)
-                '''
                 if self.attention_method in METHOD_DICT:
                     result_list = METHOD_DICT[self.attention_method](page_text, self.attention_exp)
                 else:
@@ -90,7 +82,8 @@ class WebVisit(object):
             else:
                 print u"get page %s error! " % url
             time.sleep(self.fail_time_interval_num + random.randint(10, 30))
-        return result_list_all
+            yield result_list
+        # return result_list_all
 
     # 保存抓取结果
     def save_result(self):
@@ -100,41 +93,14 @@ class WebVisit(object):
             pass
         while 1:
             result_list = self.visit_config()
-            result_list = filter_result(result_list, self.filter_exp, self.filter_num)
-            new_list = write_db('%s' % conf_name, 'result', result_list)
-            print new_list
-            # new_list = filter_result(new_list, self.filter_exp, self.filter_num)
-            if new_list:
-                new_json = json.dumps(new_list, encoding="UTF-8", ensure_ascii=False)
-                SendMailTo("有更新啦！ ", new_json)
-            time.sleep(self.time_interval_num + random.randint(1, 100))
+            for rl in result_list:
+                rl = filter_result(rl, self.filter_exp, self.filter_num)
+                new_list = write_db('%s' % conf_name, 'result', rl)
+                if new_list:
+                    new_json = json.dumps(new_list, encoding="UTF-8", ensure_ascii=False)
+                    SendMailTo("有更新啦！ ", new_json)
+                # time.sleep(self.time_interval_num + random.randint(1, 100))
 
-
-    '''
-    # 根据配置获取返回结果需要抓取的内容
-    def return_config(self):
-        for url in self.start_page_list:
-            page_text = self.visit_web(url)
-            if page_text:
-                if self.return_method == 're':
-                    result_list = re_find(page_text, self.return_exp)
-                elif self.return_method == 'xpath':
-                    result_list = xpath_find(page_text, self.return_exp)
-                elif self.return_method == 'css':
-                    result_list = css_find(page_text, self.return_exp)
-                else:
-                    print u"Return.method字段配置错误! 请检查后重试! "
-                    exit()
-                return result_list
-            else:
-                print u"get page error! "
-
-    #
-    def save_return(self):
-        return_list = self.return_config()
-        for rl in return_list:
-            pass
-    '''
 
 if __name__ == '__main__':
     newVisit = WebVisit()
