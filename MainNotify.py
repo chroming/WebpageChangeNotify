@@ -3,11 +3,17 @@
 import requests
 import time
 from RequestsHeader import req_headers
-from crawl_info import *
+from CrawlInfo import *
 from read_DB import *
-from sendMail import *
+from SendMail import *
 from FilterResult import *
 import random
+
+METHOD_DICT = {
+    're': re_find,
+    'xpath': xpath_find,
+    'css': css_find
+}
 
 
 class WebVisit(object):
@@ -66,12 +72,16 @@ class WebVisit(object):
             page_text = self.visit_web(url)
             if page_text:
                 print u"%s访问成功！ " % url
+                '''
                 if self.attention_method == 're':
                     result_list = re_find(page_text, self.attention_exp)
                 elif self.attention_method == 'xpath':
                     result_list = xpath_find(page_text, self.attention_exp)
                 elif self.attention_method == 'css':
                     result_list = css_find(page_text, self.attention_exp)
+                '''
+                if self.attention_method in METHOD_DICT:
+                    result_list = METHOD_DICT[self.attention_method](page_text, self.attention_exp)
                 else:
                     print u"Attention.method字段配置错误! 请检查后重试! "
                     exit()
@@ -93,7 +103,7 @@ class WebVisit(object):
             result_list = filter_result(result_list, self.filter_exp, self.filter_num)
             new_list = write_db('%s' % conf_name, 'result', result_list)
             print new_list
-            #new_list = filter_result(new_list, self.filter_exp, self.filter_num)
+            # new_list = filter_result(new_list, self.filter_exp, self.filter_num)
             if new_list:
                 new_json = json.dumps(new_list, encoding="UTF-8", ensure_ascii=False)
                 SendMailTo("有更新啦！ ", new_json)
