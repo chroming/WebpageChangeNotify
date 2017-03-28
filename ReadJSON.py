@@ -2,10 +2,10 @@
 
 import os
 import json
+import sys
 
-conf_name = raw_input("Please input config name: ")
-if not conf_name:
-    name = 'config.json'
+conf_name = sys.argv[1] if len(sys.argv) == 2 else 'config.json'
+print sys.argv,len(sys.argv)
 
 
 # 读取配置文件
